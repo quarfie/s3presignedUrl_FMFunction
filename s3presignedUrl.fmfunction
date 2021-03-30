@@ -27,6 +27,7 @@ CHANGELOG
        2021-03-20 JW Created
        2021-03-23 JW Added method parameter
        2021-03-25 JW Added URL encoding of file path
+       2021-03-30 JW Added optionsObj parameter to pass optional parameters
 ==================================================================
 */
 
