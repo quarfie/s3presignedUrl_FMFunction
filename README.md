@@ -11,3 +11,8 @@ s3presignedUrl ( method ; bucket ; region ; file ; expireSeconds ; accessKey ; s
 * expireSeconds | the length of time that the URL will be valid
 * accessKey | AWS Access Key
 * secretKey | AWS Secret Key
+* optionsObj | empty or JSON object containing optional options
+
+## OPTIONAL PARAMETERS
+Optional parameters are passed as JSON inside the optionsObj parameter
+* host | the provider's domain, with or without the bucket name. not required for AWS.
