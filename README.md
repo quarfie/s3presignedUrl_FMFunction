@@ -1,7 +1,7 @@
 # s3presignedUrl()
 FileMaker custom function to generate a presigned URL to upload/download/delete an object in S3
 
-s3presignedUrl ( method ; bucket ; region ; file ; expireSeconds ; accessKey ; secretKey ; obtionsObj )
+s3presignedUrl ( method ; bucket ; region ; file ; expireSeconds ; accessKey ; secretKey ; optionsObj )
 
 ## PARAMETERS
 * method | GET or PUT or DELETE or HEAD
