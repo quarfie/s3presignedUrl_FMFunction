@@ -28,6 +28,7 @@ CHANGELOG
        2021-03-23 JW Added method parameter
        2021-03-25 JW Added URL encoding of file path
        2021-03-30 JW Added optionsObj parameter to pass optional parameters
+       2021-07-23 JW Updated to convert "%2F" to "/" after signing, for compatibility with web viewer in WebDirect
 ==================================================================
 */
 
@@ -59,7 +60,7 @@ Let ([
 
   ~lf = Char(10) ;
   ~query = "X-Amz-Algorithm=AWS4-HMAC-SHA256" 
-          & "&X-Amz-Credential=" & ~accessKey & "%2F" & ~date & "%2F" & ~region & "%2F" & "s3" & "%2F" & "aws4_request" 
+          & "&X-Amz-Credential=" & ~accessKey & "%2F" & ~date & "%2F" & ~region & "%2F" & "s3" & "%2F" & "aws4_request"
           & "&X-Amz-Date=" & ~timestamp 
           & "&X-Amz-Expires=" & ~expireSeconds 
           & "&X-Amz-SignedHeaders=host" ;
@@ -83,7 +84,10 @@ Let ([
   ~kRegion = CryptAuthCode ( ~region ; "SHA256" ; ~kDate ) ;
   ~kService = CryptAuthCode ( "s3" ; "SHA256" ; ~kRegion ) ;
   ~kSigning = CryptAuthCode ( "aws4_request" ; "SHA256" ; ~kService ) ;
-  ~signature = Lower( HexEncode ( CryptAuthCode ( ~string_to_sign ; "SHA256" ; ~kSigning ) ) )
+  ~signature = Lower( HexEncode ( CryptAuthCode ( ~string_to_sign ; "SHA256" ; ~kSigning ) ) ) ;
+
+  ~query = Substitute ( ~query ; "%2F" ; "/" )
+       //must be percent encoded to calculate the signature, but it is more compatible with WebDirect if the URL is converted back to unencoded form.
 
 ];
 
