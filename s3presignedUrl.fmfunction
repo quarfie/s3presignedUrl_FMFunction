@@ -29,6 +29,7 @@ CHANGELOG
        2021-03-25 JW Added URL encoding of file path
        2021-03-30 JW Added optionsObj parameter to pass optional parameters
        2021-07-23 JW Updated to convert "%2F" to "/" after signing, for compatibility with web viewer in WebDirect
+       2021-09-08 JW Added substitutions to account for GetAsURLEncoded() failure to encode some special characters: ' ! ( ) * :
 ==================================================================
 */
 
@@ -40,6 +41,7 @@ Let ([
   ~region = region ;
   ~bucket = bucket ;
   ~file = GetAsURLEncoded ( theFilePath ) ; //should start with "/"
+  ~file = Substitute ( ~file ; [ "'" ; "%27" ] ; [ "!" ; "%21" ] ; [ "(" ; "%28" ] ; [ ")" ; "%29" ] ; [ "*" ; "%2A" ] ; [ ":" ; "%3A" ] ) ; //strange limitation of GetAsURLEncoded
   ~expireSeconds = expireSeconds ; //up to 604800 (7 days), 86400 is 1 day
 
   ~optionsObj = If ( Left ( JSONGetElement ( optionsObj ; "xalsdjfaluksdfjlnzvoiysehsz" ) ; 3 ) = "? *" ; "{}" ; optionsObj ) ;
