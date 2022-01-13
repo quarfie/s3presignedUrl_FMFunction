@@ -30,6 +30,7 @@ CHANGELOG
        2021-03-30 JW Added optionsObj parameter to pass optional parameters
        2021-07-23 JW Updated to convert "%2F" to "/" after signing, for compatibility with web viewer in WebDirect
        2021-09-08 JW Added substitutions to account for GetAsURLEncoded() failure to encode some special characters: ' ! ( ) * :
+       2022-01-13 JW Modified how third party provider hostnames are handled for better compatibility. You must now pass the full hostname for non-AWS providers.
 ==================================================================
 */
 
@@ -46,7 +47,6 @@ Let ([
 
   ~optionsObj = If ( Left ( JSONGetElement ( optionsObj ; "xalsdjfaluksdfjlnzvoiysehsz" ) ; 3 ) = "? *" ; "{}" ; optionsObj ) ;
   ~optionsHost = JSONGetElement ( ~optionsObj ; "host" ) ;
-  ~optionsHost = Case ( Left ( ~optionsHost ; Length ( ~region ) ) = ~region ; ~optionsHost ; Length ( ~optionsHost ) ; ~region & "." & ~optionsHost ; "" ) ;
 
   ~host = If ( IsEmpty ( ~optionsHost ) ; ~bucket & ".s3" & If ( ~region ≠ "us-east-1" ; "-" & ~region ) & ".amazonaws.com" ; ~optionsHost ) ;
 
