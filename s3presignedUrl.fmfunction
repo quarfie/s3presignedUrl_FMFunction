@@ -19,9 +19,11 @@ RETURNS:
 NOTES & DEPENDENCIES:
        Optional options in optionsObj:
        host | the provider's domain, with or without the bucket name. not required for AWS.
+       token | the session token (e.g., from AWS STS), if your role requires you to include one.
 
 CONTRIBUTORS
        JW / Jason Wood / Define Database / www.definedatabase.com
+       CLC / Cristos Lianides-Chin / Codence / www.codence.com
 
 CHANGELOG
        2021-03-20 JW Created
@@ -31,6 +33,7 @@ CHANGELOG
        2021-07-23 JW Updated to convert "%2F" to "/" after signing, for compatibility with web viewer in WebDirect
        2021-09-08 JW Added substitutions to account for GetAsURLEncoded() failure to encode some special characters: ' ! ( ) * :
        2022-01-13 JW Modified how third party provider hostnames are handled for better compatibility. You must now pass the full hostname for non-AWS providers.
+       2022-10-25 CLC Added support for optional `X-Amz-Security-Token` header via `token` in `optionsObj` when using AWS STS session tokens
 ==================================================================
 */
 
@@ -47,6 +50,7 @@ Let ([
 
   ~optionsObj = If ( Left ( JSONGetElement ( optionsObj ; "xalsdjfaluksdfjlnzvoiysehsz" ) ; 3 ) = "? *" ; "{}" ; optionsObj ) ;
   ~optionsHost = JSONGetElement ( ~optionsObj ; "host" ) ;
+  ~optionsToken = GetAsURLEncoded ( JSONGetElement ( ~optionsObj ; "token" ) );
 
   ~host = If ( IsEmpty ( ~optionsHost ) ; ~bucket & ".s3" & If ( ~region ≠ "us-east-1" ; "-" & ~region ) & ".amazonaws.com" ; ~optionsHost ) ;
 
@@ -65,6 +69,7 @@ Let ([
           & "&X-Amz-Credential=" & ~accessKey & "%2F" & ~date & "%2F" & ~region & "%2F" & "s3" & "%2F" & "aws4_request"
           & "&X-Amz-Date=" & ~timestamp 
           & "&X-Amz-Expires=" & ~expireSeconds 
+          & If ( Length ( ~optionsToken ) ; "&X-Amz-Security-Token=" & ~optionsToken ) 
           & "&X-Amz-SignedHeaders=host" ;
 
   ~canonical_request = ~method & ~lf 
@@ -86,10 +91,10 @@ Let ([
   ~kRegion = CryptAuthCode ( ~region ; "SHA256" ; ~kDate ) ;
   ~kService = CryptAuthCode ( "s3" ; "SHA256" ; ~kRegion ) ;
   ~kSigning = CryptAuthCode ( "aws4_request" ; "SHA256" ; ~kService ) ;
-  ~signature = Lower( HexEncode ( CryptAuthCode ( ~string_to_sign ; "SHA256" ; ~kSigning ) ) ) ;
+  ~signature = Lower( HexEncode ( CryptAuthCode ( ~string_to_sign ; "SHA256" ; ~kSigning ) ) );
 
-  ~query = Substitute ( ~query ; "%2F" ; "/" )
-       //must be percent encoded to calculate the signature, but it is more compatible with WebDirect if the URL is converted back to unencoded form.
+  ~query = Substitute ( ~query ; ["%2F" ; "/" ]) //must be percent encoded to calculate the signature, but it is more compatible with WebDirect if the URL is converted back to unencoded form.
+       
 
 ];
 
