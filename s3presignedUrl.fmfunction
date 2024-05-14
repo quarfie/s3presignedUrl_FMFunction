@@ -34,6 +34,7 @@ CHANGELOG
        2021-09-08 JW Added substitutions to account for GetAsURLEncoded() failure to encode some special characters: ' ! ( ) * :
        2022-01-13 JW Modified how third party provider hostnames are handled for better compatibility. You must now pass the full hostname for non-AWS providers.
        2022-10-25 CLC Added support for optional `X-Amz-Security-Token` header via `token` in `optionsObj` when using AWS STS session tokens
+       2023-06-29 JW Transitioned from S3 dash Region endpoint structure to S3 dot Region endpoint structure to expand support to all AWS regions.
 ==================================================================
 */
 
@@ -52,7 +53,7 @@ Let ([
   ~optionsHost = JSONGetElement ( ~optionsObj ; "host" ) ;
   ~optionsToken = GetAsURLEncoded ( JSONGetElement ( ~optionsObj ; "token" ) );
 
-  ~host = If ( IsEmpty ( ~optionsHost ) ; ~bucket & ".s3" & If ( ~region ≠ "us-east-1" ; "-" & ~region ) & ".amazonaws.com" ; ~optionsHost ) ;
+  ~host = If ( IsEmpty ( ~optionsHost ) ; ~bucket & ".s3." & ~region & ".amazonaws.com" ; ~optionsHost ) ;
 
   ~file = Substitute ( ~file ; "%2F" ; "/" ) ;
   ~file = If ( Left ( ~file ; 1 ) = "/" ; ~file ; "/" & ~file ) ;
