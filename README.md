@@ -15,7 +15,7 @@ s3presignedUrl ( method ; bucket ; region ; theFilePath ; expireSeconds ; access
 
 ## OPTIONAL PARAMETERS
 Optional parameters are passed as JSON inside the optionsObj parameter
-* host | the provider's domain, with or without the bucket name. not required for AWS.
+* host | the provider's domain, not required for AWS. Must include the full hostname including the bucket name if required.
 
 ## USAGE
 
