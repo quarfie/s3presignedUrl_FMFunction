@@ -33,8 +33,8 @@ CHANGELOG
        2021-07-23 JW Updated to convert "%2F" to "/" after signing, for compatibility with web viewer in WebDirect
        2021-09-08 JW Added substitutions to account for GetAsURLEncoded() failure to encode some special characters: ' ! ( ) * :
        2022-01-13 JW Modified how third party provider hostnames are handled for better compatibility. You must now pass the full hostname for non-AWS providers.
-       2022-10-25 CLC Added support for optional `X-Amz-Security-Token` header via `token` in `optionsObj` when using AWS STS session tokens
        2023-06-29 JW Transitioned from S3 dash Region endpoint structure to S3 dot Region endpoint structure to expand support to all AWS regions.
+       2024-06-03 CLC Added support for optional `X-Amz-Security-Token` header via `token` in `optionsObj` when using AWS STS session tokens
 ==================================================================
 */
 
